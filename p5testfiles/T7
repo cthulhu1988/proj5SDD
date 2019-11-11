@@ -1,0 +1,8 @@
+#!/bin/bash
+
+swipl < P5IN7 |& tee TEMPOUT
+
+../p5_prolog_chksat.py P5IN7 TEMPOUT
+
+echo
+rm -f TEMPOUT
