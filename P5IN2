@@ -3,5 +3,5 @@ consult('p5').
 
 sat_with_print( [
     [ 1],
-    [-2]
+    [-1]
 ] ), !.
