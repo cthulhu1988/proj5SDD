@@ -1,12 +1,10 @@
-
-sat_with_print(Dimac, Model) :-
+sat_with_print(Dimac) :-
     vars_dimac(Dimac,Vars),
     assign_free_vars(Vars,VarsValues),
     sat_with_print(VarsValues,Dimac,[]),
-	Model = VarsValues.
+	 write(VarsValues).
 
 sat_with_print(VarValues,Dimac0,Dimac1) :-
-
     \+ empty_clause(Dimac0),
     VarValues = [(Var,Value)|VarValues1],
     assign_unit_clauses(VarValues,Dimac0,IDimac1),
@@ -36,26 +34,26 @@ assign_free_vars([Head0|Tail0],[(Head0,_)|Tail1]) :-
 assign_free_vars([],[]).
 
 
-simpl((Var,'T'),[Line0|Lines0], Lines1) :-
+simpl((Var,'1'),[Line0|Lines0], Lines1) :-
     member(Var,Line0),
-    simpl((Var,'T'),Lines0,Lines1).
-simpl((Var,'F'),[Line0|Lines0], Lines1) :-
+    simpl((Var,'1'),Lines0,Lines1).
+simpl((Var,'0'),[Line0|Lines0], Lines1) :-
     NegVar is 0 - Var,
     member(NegVar,Line0),
-    simpl((Var,'F'),Lines0,Lines1).
+    simpl((Var,'0'),Lines0,Lines1).
 simpl((Var,Value),[Line0|Lines0], [Line1|Lines1]) :-
     NegVar is 0 - Var,
-    \+ (member(Var,Line0), Value = 'T'),
-    \+ (member(NegVar,Line0), Value = 'F'),
+    \+ (member(Var,Line0), Value = '1'),
+    \+ (member(NegVar,Line0), Value = '0'),
     simpl_line((Var,Value),Line0,Line1),
     simpl((Var,Value),Lines0,Lines1).
 simpl((_,_),[],[]).
 
 
-simpl_line((Var,'F'),Line0,Line1) :-
+simpl_line((Var,'0'),Line0,Line1) :-
     member(Var,Line0),
     subtract(Line0,[Var],Line1).
-simpl_line((Var,'T'),Line0,Line1) :-
+simpl_line((Var,'1'),Line0,Line1) :-
     NegVar is 0 - Var,
     member(NegVar,Line0),
     subtract(Line0,[NegVar],Line1).
@@ -89,8 +87,8 @@ get_unit_clauses([],[]).
 remove_units([Var|Vars],VarValues,Dimac0,Dimac1) :-
     (Var < 0 ->
             PosVar is 0 - (Var),
-            VarValue = (PosVar,'F')
-    ; VarValue = (Var,'T')
+            VarValue = (PosVar,'0')
+    ; VarValue = (Var,'1')
     ),
     member(VarValue,VarValues),
     simpl(VarValue,Dimac0,IDimac1),
@@ -101,5 +99,5 @@ remove_units([],_,Dimac0,Dimac0).
 
 
 
-boolean('T').
-boolean('F').
+boolean('1').
+boolean('0').
